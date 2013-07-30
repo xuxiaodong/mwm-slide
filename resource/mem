@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+#
+# name     : mem, memory information for mobar
+# author   : Xu Xiaodong <xxdlhy@gmail.com>
+# license  : GPL
+# created  : 2012 Jul 30
+# modified : 2012 Jul 30
+#
+
+mem = %x(free)
+
+if mem =~ /Mem.*?(\d+)\s+.*cache.*?(\d+)\s+/m
+  total, used = $1, $2
+  mem_percent = (used.to_f / total.to_f * 100).to_i
+end
+
+puts "#{mem_percent}%"

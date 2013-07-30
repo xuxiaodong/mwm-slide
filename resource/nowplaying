@@ -1,0 +1,37 @@
+#!/usr/bin/env perl
+#
+# name     : nowplaying, cmus status for conky
+# author   : Xu Xiaodong <xxdlhy@gmail.com>
+# license  : GPL
+# created  : 2012 May 26
+# modified : 2013 Jun 30
+#
+
+use strict;
+use warnings;
+
+my @cmus_status = qx(cmus-remote -Q 2>/dev/null);
+my %meta;
+
+for my $line (@cmus_status) {
+  $meta{'status'} = $1 if $line =~ /^status (.*)$/;
+  $meta{'artist'} = $1 if $line =~ /^.*artist (.*)$/;
+  $meta{'title'}  = $1 if $line =~ /^.*title (.*)$/;
+
+  unless ( defined $meta{'artist'} or defined $meta{'title'} ) {
+    ( $meta{'artist'}, $meta{'title'} ) = ( $1, $2 )
+      if $line =~ /^file.*?- (.*) -.*?- (.*)\./;
+  }
+}
+
+if ( defined $meta{'status'} ) {
+  if ( $meta{'status'} eq 'playing' ) {
+    print "$meta{'title'} by $meta{'artist'}";
+  }
+  else {
+    print $meta{'status'};
+  }
+}
+else {
+  print "n/a";
+}

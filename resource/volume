@@ -1,0 +1,22 @@
+#!/usr/bin/env perl
+#
+# name     : volume, volume for conky
+# author   : Xu Xiaodong <xxdlhy@gmail.com>
+# license  : GPL
+# created  : 2012 Jun 03
+# modified : 2012 Dec 06
+#
+
+my @cmd_out = qx(amixer get Master);
+my $volume;
+
+for my $line (@cmd_out) {
+  $volume = $1 if $line =~ /\[([^]]*)\].*dB/;
+}
+
+if ( defined $volume ) {
+  print $volume;
+}
+else {
+  print "n/a";
+}

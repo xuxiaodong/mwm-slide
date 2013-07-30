@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+#
+# name     : wifi, wifi information for mobar
+# author   : Xu Xiaodong <xxdlhy@gmail.com>
+# license  : GPL
+# created  : 2012 Nov 18
+# modified : 2012 Nov 18
+#
+
+wifi = %x(/sbin/iwconfig wlan0)
+essid = $1 if wifi =~ /ESSID:"(.*?)"/
+
+if essid.nil?
+  puts "n/a"
+else
+  puts essid
+end

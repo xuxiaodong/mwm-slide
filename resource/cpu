@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+#
+# name     : cpu, cpu information for mobar
+# author   : Xu Xiaodong <xxdlhy@gmail.com>
+# license  : GPL
+# created  : 2012 Jul 31
+# modified : 2012 Jul 31
+#
+
+def total
+  stat_file = '/proc/stat'
+  File.open(stat_file) do |f|
+    values = f.readline.split(/\s+/)[1 .. 4].map(&:to_i)
+    idle = values.last
+    total = values.inject(0, &:+)
+    return [idle, total]
+  end
+end
+
+prev_idle, prev_total = total
+sleep 0.5
+cur_idle, cur_total = total
+cpu = (((cur_total - prev_total) - (cur_idle - prev_idle)).to_f / (cur_total - prev_total).to_f * 100).to_i
+
+puts "#{cpu}%"

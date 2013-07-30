@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+#
+# name     : batter, battery information for mobar
+# author   : Xu Xiaodong <xxdlhy@gmail.com>
+# license  : GPL
+# created  : 2012 Jul 30
+# modified : 2012 Jul 31
+#
+
+def parse file, regex
+  File.open(file) do |f|
+    f.readlines.each { |l| return $1 if l =~ /#{regex}/ }
+  end
+end
+
+ac_state    = parse '/proc/acpi/ac_adapter/AC0/state', %r(^state:\s+(.*)$)
+bat_remain  = parse '/proc/acpi/battery/BAT0/state'  , %r(^remaining.*?(\d+))
+bat_full    = parse '/proc/acpi/battery/BAT0/info'   , %r(^last\sfull.*?(\d+))
+bat_percent = (bat_remain.to_f / bat_full.to_f * 100).to_i
+
+if ac_state == 'on-line'
+  puts 'AC'
+else
+  puts "#{bat_percent}%"
+end
